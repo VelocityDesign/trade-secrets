@@ -1,15 +1,21 @@
 <script>
     import { sdk } from "../../appwrite";
-    import { ID } from "appwrite"
+    import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
+
     let email = "";
 
     async function startAuth(event) {
         event.preventDefault();
-        let magicLinkStatus = sdk.account.createMagicURLSession(ID.unique(), email);
+        let magicLinkStatus = sdk.account.createMagicURLSession(
+            email.replaceAll("@", "_"),
+            email,
+            "http://localhost:5173/auth/finish"
+        );
         Promise.resolve(magicLinkStatus).then(
             function (response) {
-                goto("/auth/sent/")
+                goto("/auth/sent/");
             },
             function (error) {
                 console.log(error);
